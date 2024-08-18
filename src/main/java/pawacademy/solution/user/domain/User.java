@@ -3,11 +3,13 @@ package pawacademy.solution.user.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pawacademy.solution.user.application.PasswordComplexity;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -53,5 +55,11 @@ public class User implements Cloneable {
     @Override
     public User clone() {
         return new User(this.id, this.email, this.password, this.firstName, this.lastName, this.avatar, this.birthDate, this.gender);
+    }
+
+    public String getAvatar() {
+        return !Objects.isNull(avatar) ? ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/" + avatar)
+                .toUriString() : null;
     }
 }

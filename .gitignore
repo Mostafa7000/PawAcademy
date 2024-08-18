@@ -5,6 +5,8 @@ doc/
 !**/src/main/**
 !**/src/test/**
 
+/media/**
+
 ### STS ###
 .apt_generated
 .classpath
