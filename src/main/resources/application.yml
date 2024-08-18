@@ -1,0 +1,20 @@
+spring:
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+        open-in-view: off
+    datasource:
+        url: jdbc:mysql://localhost:3306/pets
+        username: root
+        password: password
+
+server:
+    port: 8080
+    compression:
+        enabled: true
+        mime-types: application/json,application/xml,text/html,text/xml,text/plain
+
+jwt:
+    secret: e120b63da21339cf5ab75041003b83936004ae0b7766e35d3d60945470a96ef0
+    expiration: 3600000
