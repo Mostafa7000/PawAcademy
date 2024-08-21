@@ -1,4 +1,4 @@
-package pawacademy.solution.user.application;
+package pawacademy.solution.user.application.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

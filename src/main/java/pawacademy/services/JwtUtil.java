@@ -1,4 +1,4 @@
-package pawacademy.solution.user.application;
+package pawacademy.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

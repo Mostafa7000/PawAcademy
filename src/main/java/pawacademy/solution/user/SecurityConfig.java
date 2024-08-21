@@ -12,8 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pawacademy.solution.user.application.CustomUserDetailsService;
-import pawacademy.solution.user.application.JwtAuthenticationFilter;
+import pawacademy.solution.user.application.authentication.CustomUserDetailsService;
+import pawacademy.solution.user.application.authentication.JwtAuthenticationFilter;
 
 @Configuration(value = "security")
 @EnableWebSecurity

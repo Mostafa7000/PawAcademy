@@ -1,4 +1,4 @@
-package pawacademy.solution.user;
+package pawacademy.services;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pawacademy.solution.user.application.PasswordComplexity;
+import pawacademy.solution.user.application.validation.PasswordComplexity;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;

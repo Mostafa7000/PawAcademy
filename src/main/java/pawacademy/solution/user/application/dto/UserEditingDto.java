@@ -1,4 +1,4 @@
-package pawacademy.solution.user.application;
+package pawacademy.solution.user.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pawacademy.solution.user.application.dto.UserRegistrationDto;
 import pawacademy.solution.user.domain.User;
 import pawacademy.solution.user.domain.UserRepository;
 

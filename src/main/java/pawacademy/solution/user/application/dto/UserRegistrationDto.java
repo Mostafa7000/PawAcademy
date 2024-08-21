@@ -1,9 +1,10 @@
-package pawacademy.solution.user.application;
+package pawacademy.solution.user.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
+import pawacademy.solution.user.application.validation.PasswordComplexity;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;

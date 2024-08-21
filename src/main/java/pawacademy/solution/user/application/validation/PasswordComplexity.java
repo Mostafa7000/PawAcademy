@@ -1,4 +1,4 @@
-package pawacademy.solution.user.application;
+package pawacademy.solution.user.application.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

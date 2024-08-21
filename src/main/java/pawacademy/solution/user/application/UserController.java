@@ -3,11 +3,11 @@ package pawacademy.solution.user.application;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pawacademy.solution.user.FileStorageService;
+import pawacademy.services.FileStorageService;
+import pawacademy.solution.user.application.authentication.CurrentUser;
+import pawacademy.solution.user.application.dto.UserEditingDto;
 import pawacademy.solution.user.domain.User;
 import pawacademy.solution.user.domain.UserRepository;
 
@@ -24,20 +24,12 @@ public class UserController {
     private FileStorageService fileStorageService;
 
     @GetMapping
-    public ResponseEntity<?> profile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-
+    public ResponseEntity<?> profile(@CurrentUser User user) {
         return ResponseEntity.ok(user);
     }
 
     @PatchMapping
-    public ResponseEntity<?> editProfile(@Valid @RequestBody UserEditingDto updatedUser) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        User existingUser = userRepository.findByEmail(email).orElse(null);
-
+    public ResponseEntity<?> editProfile(@Valid @RequestBody UserEditingDto updatedUser, @CurrentUser User existingUser) {
         if (existingUser != null) {
             var mapper = new ModelMapper();
             mapper.getConfiguration().setSkipNullEnabled(true);
@@ -50,11 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/avatar")
-    public ResponseEntity<String> uploadAvatar(@RequestParam("image") MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-
+    public ResponseEntity<String> uploadAvatar(@RequestParam("image") MultipartFile file, @CurrentUser User user) {
         try {
             if (user.getAvatar() != null) {
                 fileStorageService.deleteFile(user.getAvatar().substring(user.getAvatar().indexOf("media/")));
