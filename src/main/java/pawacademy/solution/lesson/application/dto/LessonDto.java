@@ -16,4 +16,5 @@ public class LessonDto {
     private String content;
     private String video;
     private List<QuestionDto> questions;
+    private boolean passed;
 }

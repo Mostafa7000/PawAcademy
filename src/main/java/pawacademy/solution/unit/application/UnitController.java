@@ -1,10 +1,8 @@
 package pawacademy.solution.unit.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import pawacademy.solution.lesson.application.dto.LessonDto;
 import pawacademy.solution.unit.application.dto.UnitDto;
 import pawacademy.solution.user.application.authentication.CurrentUser;
@@ -23,8 +21,15 @@ public class UnitController {
         return unitService.getUnits(user);
     }
 
-    @GetMapping("/{id}/lessons")
-    public List<LessonDto> getLessons(@CurrentUser User user, @PathVariable Long id) {
-        return unitService.getLessons(id);
+    @GetMapping("/{unitId}/lessons")
+    public List<LessonDto> getLessons(@CurrentUser User user, @PathVariable Long unitId) {
+        return unitService.getLessons(unitId, user);
+    }
+    @PostMapping("/{unitId}/lessons/{lessonId}/complete")
+    public ResponseEntity<Void> markLessonAsCompleted(@CurrentUser User user,
+                                                      @PathVariable Long unitId,
+                                                      @PathVariable Long lessonId) {
+        unitService.markLessonAsCompleted(user, unitId, lessonId);
+        return ResponseEntity.ok().build(); // 200 OK, or 204 No Content
     }
 }
