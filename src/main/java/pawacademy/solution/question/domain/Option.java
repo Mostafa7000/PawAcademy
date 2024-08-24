@@ -1,4 +1,4 @@
-package pawacademy.solution.quiz.domain;
+package pawacademy.solution.question.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,10 +17,23 @@ public class Option {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
 
     @NotBlank
     private String text;
+    public static Option getTrue() {
+        Option option = new Option();
+        option.setId(1L);
+        option.setText("True");
+        return option;
+    }
+
+    public static Option getFalse() {
+        Option option = new Option();
+        option.setId(2L);
+        option.setText("False");
+        return option;
+    }
 }

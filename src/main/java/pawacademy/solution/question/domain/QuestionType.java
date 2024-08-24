@@ -1,4 +1,4 @@
-package pawacademy.solution.quiz.domain;
+package pawacademy.solution.question.domain;
 
 public enum QuestionType {
     MULTIPLE_CHOICE,

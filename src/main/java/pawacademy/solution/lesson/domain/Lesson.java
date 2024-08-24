@@ -3,10 +3,12 @@ package pawacademy.solution.lesson.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pawacademy.solution.quiz.domain.Quiz;
+import pawacademy.solution.question.domain.Question;
+import pawacademy.solution.unit.domain.Unit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Entity
 @Table(name = "lessons")
@@ -22,12 +24,16 @@ public class Lesson implements Cloneable {
     @NotBlank
     private String content;
     private String video;
-    @OneToOne
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
 
     @Override
     public Lesson clone() {
-        return new Lesson(this.id, this.name, this.content, this.video, this.quiz);
+        return new Lesson(this.id, this.name, this.content, this.video, this.questions, unit);
     }
 }

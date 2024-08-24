@@ -1,8 +1,9 @@
-package pawacademy.solution.quiz.domain;
+package pawacademy.solution.question.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pawacademy.solution.lesson.domain.Lesson;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -18,11 +19,12 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
     @NotBlank
     private String text;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lesson_id")
+    private Lesson lesson;
 
     @Enumerated(EnumType.STRING)
     private QuestionType type;
@@ -31,4 +33,11 @@ public class Question {
     private List<Option> options;
     @OneToOne
     private Option correctAnswer;
+
+    public List<Option> getOptions() {
+        if (type == QuestionType.TRUE_FALSE) {
+            return List.of(Option.getTrue(), Option.getFalse());
+        }
+        return options;
+    }
 }
