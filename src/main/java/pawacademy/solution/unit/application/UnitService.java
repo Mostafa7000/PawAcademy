@@ -10,13 +10,14 @@ import pawacademy.solution.lesson.domain.CompletedLessonRepository;
 import pawacademy.solution.lesson.domain.Lesson;
 import pawacademy.solution.lesson.domain.LessonRepository;
 import pawacademy.solution.unit.application.dto.UnitDto;
-import pawacademy.solution.unit.domain.Unit;
 import pawacademy.solution.unit.domain.UnitRepository;
 import pawacademy.solution.user.application.authentication.CurrentUser;
 import pawacademy.solution.user.domain.User;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UnitService {
@@ -28,15 +29,23 @@ public class UnitService {
     CompletedLessonRepository completedLessonRepository;
 
     public List<UnitDto> getUnits(@CurrentUser User user) {
-        List<UnitDto> result = new ArrayList<>();
-        for (Unit unit : unitRepository.findAll()) {
-            UnitDto unitDto = new UnitDto();
-            ModelMapper mapper = new ModelMapper();
-            mapper.map(unit, unitDto);
+        List<Object[]> results = unitRepository.findWithCompletedLessonsAndTotalLessonsByUserId(user.getId());
 
-            result.add(unitDto);
-        }
-        return result;
+        return results.stream()
+                .map(this::convertToUnitDto)
+                .collect(Collectors.toList());
+    }
+
+    private UnitDto convertToUnitDto(Object[] result) {
+        UnitDto unitDto = new UnitDto();
+        unitDto.setId(((BigInteger) result[0]).longValue());
+        unitDto.setName((String) result[1]);
+        unitDto.setDescription((String) result[2]);
+        unitDto.setImage((String) result[3]);
+        unitDto.setExam((String) result[4]);
+        unitDto.setCompletedLessons(((Number) result[5]).intValue());
+        unitDto.setTotalLessons(((Number) result[6]).intValue());
+        return unitDto;
     }
 
     @Transactional

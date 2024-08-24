@@ -16,6 +16,8 @@ public class UnitDto{
     private String description;
     private String image;
     private String exam;
+    private int completedLessons;
+    private int totalLessons;
 
     public String getImage() {
         return !Objects.isNull(image) ? ServletUriComponentsBuilder.fromCurrentContextPath()
