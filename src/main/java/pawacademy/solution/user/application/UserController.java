@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pawacademy.services.FileStorageService;
+import pawacademy.services.UriService;
 import pawacademy.solution.user.application.authentication.CurrentUser;
-import pawacademy.solution.user.application.dto.AvatarDto;
 import pawacademy.solution.user.application.dto.UserEditingDto;
 import pawacademy.solution.user.domain.User;
 import pawacademy.solution.user.domain.UserRepository;
@@ -57,8 +57,7 @@ public class UserController {
         String fileName = fileStorageService.storeFile(file, "avatars");
         user.setAvatar(fileName);
         userRepository.save(user);
-        var avatarDto = AvatarDto.builder().avatarUrl(fileName).build();
-        return ResponseEntity.ok(avatarDto);
-    }
 
+        return ResponseEntity.ok(UriService.getUri(fileName));
+    }
 }

@@ -3,13 +3,12 @@ package pawacademy.solution.user.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pawacademy.services.UriService;
 import pawacademy.solution.user.application.validation.PasswordComplexity;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -54,8 +53,9 @@ public class User implements Cloneable {
     }
 
     public String getAvatar() {
-        return !Objects.isNull(avatar) ? ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/" + avatar)
-                .toUriString() : null;
+        return UriService.getUri(avatar);
+    }
+    public String getInternalAvatarUrl() {
+        return avatar;
     }
 }

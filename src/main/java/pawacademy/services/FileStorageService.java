@@ -17,7 +17,6 @@ public class FileStorageService {
     private final Path absoluteDirectory = Paths.get("").toAbsolutePath().normalize();
     private final Path mediaDirectory = absoluteDirectory.resolve("media");
 
-
     public FileStorageService() {
         try {
             Files.createDirectories(mediaDirectory);
@@ -35,7 +34,7 @@ public class FileStorageService {
             Path targetLocation = entityDirectory.resolve(fileName);
             Files.write(targetLocation, file.getBytes());
 
-            return "/" + absoluteDirectory.relativize(targetLocation).toString().replace("\\", "/");
+            return absoluteDirectory.relativize(targetLocation).toString().replace("\\", "/");
         } catch (IOException e) {
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!", e);
         }
@@ -47,7 +46,12 @@ public class FileStorageService {
      * @param fileName the name including every directory from the media directory
      */
     public void deleteFile(String fileName) throws IOException {
-        Path toBeDeleted = absoluteDirectory.resolve(fileName).normalize();
+        // Remove the leading slash if present
+        if (fileName.startsWith("/")) {
+            fileName = fileName.substring(1);
+        }
+
+        Path toBeDeleted = absoluteDirectory.resolve(fileName);
         Files.delete(toBeDeleted);
     }
 

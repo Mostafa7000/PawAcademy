@@ -13,7 +13,8 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/pets
     username: root
-    password: 24052002
+    password: password
+  #    password: 24052002
   servlet:
     multipart:
       enabled: true
@@ -28,4 +29,4 @@ server:
 
 jwt:
   secret: e120b63da21339cf5ab75041003b83936004ae0b7766e35d3d60945470a96ef0
-  expiration: 3600000
+  expiration: 43200000
