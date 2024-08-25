@@ -13,8 +13,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/pets
     username: root
-    password: password
-#    password: 24052002
+    password: 24052002
   servlet:
     multipart:
       enabled: true

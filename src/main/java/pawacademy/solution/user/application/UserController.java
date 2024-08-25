@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pawacademy.services.FileStorageService;
 import pawacademy.solution.user.application.authentication.CurrentUser;
+import pawacademy.solution.user.application.dto.AvatarDto;
 import pawacademy.solution.user.application.dto.UserEditingDto;
 import pawacademy.solution.user.domain.User;
 import pawacademy.solution.user.domain.UserRepository;
@@ -42,7 +43,7 @@ public class UserController {
     }
 
     @PostMapping("/avatar")
-    public ResponseEntity<String> uploadAvatar(@RequestParam("image") MultipartFile file, @CurrentUser User user) {
+    public ResponseEntity<?> uploadAvatar(@RequestPart("image") MultipartFile file, @CurrentUser User user) {
         try {
             if (user.getAvatar() != null) {
                 fileStorageService.deleteFile(user.getAvatar().substring(user.getAvatar().indexOf("media/")));
@@ -56,8 +57,8 @@ public class UserController {
         String fileName = fileStorageService.storeFile(file, "avatars");
         user.setAvatar(fileName);
         userRepository.save(user);
-
-        return ResponseEntity.ok(fileName);
+        var avatarDto = AvatarDto.builder().avatarUrl(fileName).build();
+        return ResponseEntity.ok(avatarDto);
     }
 
 }

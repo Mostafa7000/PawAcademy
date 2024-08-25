@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ResponseExceptionHandler {
-    private final MessageSource messageSource;
-
     @ExceptionHandler(ResponseException.class)
     public ResponseEntity<?> handleException(ResponseException e) {
         System.out.println(e.getMessage());
@@ -24,8 +22,6 @@ public class ResponseExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericExceptions(Exception e) {
         System.out.println(e.getMessage());
-        var message = messageSource.getMessage("generic.exception.message", new Object[]{}, LocaleContextHolder.getLocale());
-
         return ResponseEntity
                 .status(400)
                 .body(e.getMessage());
