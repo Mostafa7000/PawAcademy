@@ -36,11 +36,7 @@ public class User implements Cloneable {
 
     @NotBlank
     @NotNull
-    private String firstName;
-
-    @NotBlank
-    @NotNull
-    private String lastName;
+    private String fullName;
 
     private String avatar;  // Store the file name here
 
@@ -54,7 +50,7 @@ public class User implements Cloneable {
 
     @Override
     public User clone() {
-        return new User(this.id, this.email, this.password, this.firstName, this.lastName, this.avatar, this.birthDate, this.gender);
+        return new User(this.id, this.email, this.password, this.fullName, this.avatar, this.birthDate, this.gender);
     }
 
     public String getAvatar() {

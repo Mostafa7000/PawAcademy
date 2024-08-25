@@ -17,9 +17,7 @@ public class UserEditingDto {
     @Email
     private String email;
 
-    private String firstName;
-
-    private String lastName;
+    private String fullName;
 
     @Past
     private LocalDate birthDate;
@@ -28,6 +26,6 @@ public class UserEditingDto {
 
     @Override
     public UserEditingDto clone() {
-        return new UserEditingDto(this.email, this.firstName, this.lastName, this.birthDate, this.gender);
+        return new UserEditingDto(this.email, this.fullName, this.birthDate, this.gender);
     }
 }

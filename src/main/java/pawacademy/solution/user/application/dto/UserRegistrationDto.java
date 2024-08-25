@@ -27,11 +27,7 @@ public class UserRegistrationDto {
 
     @NotBlank
     @NotNull
-    private String firstName;
-
-    @NotBlank
-    @NotNull
-    private String lastName;
+    private String fullName;
 
     @Past
     @NotNull
@@ -43,6 +39,6 @@ public class UserRegistrationDto {
 
     @Override
     public UserRegistrationDto clone() {
-        return new UserRegistrationDto(this.email, this.password, this.firstName, this.lastName, this.birthDate, this.gender);
+        return new UserRegistrationDto(this.email, this.password, this.fullName, this.birthDate, this.gender);
     }
 }
