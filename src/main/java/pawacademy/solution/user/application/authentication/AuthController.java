@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pawacademy.ResponseException;
 import pawacademy.services.JwtUtil;
 import pawacademy.solution.user.application.UserService;
 import pawacademy.solution.user.application.dto.TokenDto;
@@ -30,7 +31,7 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto newUser) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto newUser) throws ResponseException {
         userService.registerUser(newUser);
         return authenticateUser(new UserLoginDto(newUser.getEmail(), newUser.getPassword()));
     }

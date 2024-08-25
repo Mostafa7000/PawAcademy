@@ -4,6 +4,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     baseline-version: 1
+    out-of-order: true
   jpa:
     hibernate:
       ddl-auto: update
