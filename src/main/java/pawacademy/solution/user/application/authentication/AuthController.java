@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pawacademy.services.JwtUtil;
 import pawacademy.solution.user.application.UserService;
+import pawacademy.solution.user.application.dto.TokenDto;
+import pawacademy.solution.user.application.dto.UserLoginDto;
 import pawacademy.solution.user.application.dto.UserRegistrationDto;
 
 import javax.validation.Valid;
@@ -30,16 +32,16 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto newUser) {
         userService.registerUser(newUser);
-        return authenticateUser(newUser);
+        return authenticateUser(new UserLoginDto(newUser.getEmail(), newUser.getPassword()));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody UserRegistrationDto loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody UserLoginDto loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtil.generateToken(loginRequest.getEmail());
-        return ResponseEntity.ok(jwt);
+        return ResponseEntity.ok(new TokenDto(jwt));
     }
 }
