@@ -3,11 +3,13 @@ package pawacademy.solution.user.application;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pawacademy.services.FileStorageService;
 import pawacademy.services.UriService;
 import pawacademy.solution.user.application.authentication.CurrentUser;
+import pawacademy.solution.user.application.dto.PasswordResetDto;
 import pawacademy.solution.user.application.dto.UserEditingDto;
 import pawacademy.solution.user.domain.User;
 import pawacademy.solution.user.domain.UserRepository;
@@ -23,6 +25,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private FileStorageService fileStorageService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public ResponseEntity<?> profile(@CurrentUser User user) {
@@ -59,5 +63,19 @@ public class UserController {
         userRepository.save(user);
 
         return ResponseEntity.ok(UriService.getUri(fileName));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordResetDto passwordResetDto, @CurrentUser User user) {
+        // Verify current password
+        if (!passwordEncoder.matches(passwordResetDto.getCurrentPassword(), user.getPassword())) {
+            return ResponseEntity.badRequest().body("Current password is incorrect");
+        }
+
+        // Update to new password
+        user.setPassword(passwordEncoder.encode(passwordResetDto.getNewPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password updated successfully");
     }
 }
