@@ -1,5 +1,6 @@
 package pawacademy.solution.forum.application;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class PostController {
 
     @Autowired
     private ForumService forumService;
+    ModelMapper mapper = new ModelMapper();
 
     @PostMapping
     public ResponseEntity<?> publishPost(
@@ -31,7 +33,11 @@ public class PostController {
     ) {
         var publishedPost = forumService.publish(user, post, attachments);
 
-        return ResponseEntity.created(URI.create(Objects.requireNonNull(UriService.getUri("posts/" + publishedPost.getId())))).build();
+        return ResponseEntity.created(getRelocationUri("posts/" + publishedPost.getId())).build();
+    }
+
+    private URI getRelocationUri(String internalPath) {
+        return URI.create(Objects.requireNonNull(UriService.getUri(internalPath)));
     }
 
     @GetMapping
@@ -40,17 +46,7 @@ public class PostController {
         List<PostDto> result = new ArrayList<>();
 
         for (var post : posts) {
-            var attachmentsUrls = new ArrayList<String>();
-            for (var attachment : post.getPostAttachments()) {
-                attachmentsUrls.add(attachment.getUrl());
-            }
-            result.add(new PostDto(
-                    post.getId(),
-                    post.getPost(),
-                    attachmentsUrls,
-                    post.getAuthor().getFullName(),
-                    post.getAuthor().getEmail())
-            );
+            result.add(mapper.map(post, PostDto.class));
         }
 
         return result;
@@ -59,12 +55,8 @@ public class PostController {
     @GetMapping("/{postId}")
     public PostDto getPost(@PathVariable Long postId) throws ResponseException {
         var post = forumService.getPost(postId);
-        var attachmentsUrls = new ArrayList<String>();
-        for (var attachment : post.getPostAttachments()) {
-            attachmentsUrls.add(attachment.getUrl());
-        }
 
-        return new PostDto(post.getId(), post.getPost(), attachmentsUrls, post.getAuthor().getFullName(), post.getAuthor().getEmail());
+        return mapper.map(post, PostDto.class);
     }
 
     @DeleteMapping("/{postId}")
@@ -81,5 +73,19 @@ public class PostController {
     ) throws ResponseException, IOException {
         forumService.editPost(postId, post, attachments);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{postId}/attachments/{attachmentId}")
+    public PostDto deleteAttachment(@PathVariable Long postId, @PathVariable Long attachmentId) throws ResponseException {
+        var modifiedPost = forumService.deletePostAttachment(postId, attachmentId);
+
+        return mapper.map(modifiedPost, PostDto.class);
+    }
+
+    @PostMapping("/{postId}/attachments")
+    public ResponseEntity<?> addAttachment(@PathVariable Long postId, @RequestParam MultipartFile attachment) throws ResponseException, IOException {
+        forumService.addPostAttachment(postId, attachment);
+
+        return ResponseEntity.created(getRelocationUri("posts/" + postId)).build();
     }
 }

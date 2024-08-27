@@ -14,6 +14,7 @@ import pawacademy.solution.user.domain.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -80,5 +81,25 @@ public class ForumService {
         for (PostAttachment postAttachment : post.getPostAttachments()) {
             fileStorageService.deleteFile(postAttachment.getInternalUrl());
         }
+    }
+
+    public Post deletePostAttachment(Long postId, Long attachmentId) throws ResponseException {
+        var post = getPost(postId);
+
+        Iterator<PostAttachment> it = post.getPostAttachments().iterator();
+        while (it.hasNext()) {
+            PostAttachment attachment = it.next();
+            if (attachment.getId().equals(attachmentId)) {
+                it.remove();
+                break;
+            }
+        }
+        return postRepository.save(post);
+    }
+
+    public Post addPostAttachment(Long postId, MultipartFile image) throws ResponseException, IOException {
+        var post = getPost(postId);
+        post.getPostAttachments().add(getAttachments(new MultipartFile[]{image}, post).get(0));
+        return postRepository.save(post);
     }
 }
