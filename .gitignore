@@ -5,7 +5,8 @@ doc/
 !**/src/main/**
 !**/src/test/**
 
-/media/**
+/media/avatars
+/media/forum
 
 ### STS ###
 .apt_generated

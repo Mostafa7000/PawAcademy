@@ -32,8 +32,6 @@ public class Lesson implements Cloneable {
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
-    private boolean passed;
-
     @Override
     public Lesson clone() {
         return new Lesson(this.id, this.name, this.content, this.video, this.questions, unit, passed);

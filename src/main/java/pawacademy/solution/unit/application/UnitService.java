@@ -55,10 +55,11 @@ public class UnitService {
         // Define property maps for nested objects
         List<LessonDto> result = new ArrayList<>();
         for (var lesson : unit.getLessons()) {
-            if (isLessonPassedByUser(lesson, user)) {
-                lesson.setPassed(true);
-            }
-            result.add(mapper.map(lesson, LessonDto.class));
+            boolean passed = isLessonPassedByUser(lesson, user);
+
+            var lessonDto = mapper.map(lesson, LessonDto.class);
+            lessonDto.setPassed(passed);
+            result.add(lessonDto);
         }
 
         return result;
