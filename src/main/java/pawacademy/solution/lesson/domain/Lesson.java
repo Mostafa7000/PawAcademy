@@ -34,6 +34,6 @@ public class Lesson implements Cloneable {
 
     @Override
     public Lesson clone() {
-        return new Lesson(this.id, this.name, this.content, this.video, this.questions, unit, passed);
+        return new Lesson(this.id, this.name, this.content, this.video, this.questions, unit);
     }
 }
