@@ -2,17 +2,16 @@ package pawacademy.solution.forum.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDto {
-    private Long id;
-    private String post;
+public class PostDto extends ReplyDto {
     private List<AttachmentDto> attachments;
-    private String authorName;
-    private String authorEmail;
+    private List<ReplyDto> replies;
 }

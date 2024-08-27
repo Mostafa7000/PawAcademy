@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AttachmentDto {
     private Long id;
-
     private String url;
 }

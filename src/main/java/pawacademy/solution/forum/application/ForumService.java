@@ -1,14 +1,12 @@
 package pawacademy.solution.forum.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pawacademy.ResponseException;
 import pawacademy.services.FileStorageService;
-import pawacademy.solution.forum.domain.Post;
-import pawacademy.solution.forum.domain.PostAttachment;
-import pawacademy.solution.forum.domain.PostRepository;
-import pawacademy.solution.forum.domain.ReplyRepository;
+import pawacademy.solution.forum.domain.*;
 import pawacademy.solution.user.application.authentication.CurrentUser;
 import pawacademy.solution.user.domain.User;
 
@@ -30,7 +28,7 @@ public class ForumService {
     public Post publish(@CurrentUser User user, String post, MultipartFile[] attachments) {
 
         Post toBeSavedPost = new Post();
-        toBeSavedPost.setPost(post);
+        toBeSavedPost.setText(post);
         toBeSavedPost.setAuthor(user);
         toBeSavedPost.setPostAttachments(getAttachments(attachments, toBeSavedPost));
 
@@ -57,34 +55,32 @@ public class ForumService {
         return postRepository.findById(id).orElseThrow(() -> new ResponseException("Post not found"));
     }
 
-    public void deletePost(Long id) throws ResponseException, IOException {
+    public void deletePost(Long id, @CurrentUser User user) throws ResponseException, IOException {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResponseException("Post Not found"));
+        validateAuthorization(post, user);
         deleteOldAttachments(post);
         postRepository.deleteById(id);
     }
 
-    public void editPost(Long id, String post, MultipartFile[] images) throws ResponseException, IOException {
+    public Post editPost(Long id, String post, MultipartFile[] images, @CurrentUser User user) throws ResponseException, IOException {
         Post postToEdit = postRepository.findById(id).orElseThrow(() -> new ResponseException("Post Not found"));
+        validateAuthorization(postToEdit, user);
         if (!Objects.isNull(post)) {
-            postToEdit.setPost(post);
+            postToEdit.setText(post);
         }
 
         if (!Objects.isNull(images)) {
             deleteOldAttachments(postToEdit);
             postToEdit.setPostAttachments(getAttachments(images, postToEdit));
         }
+        postToEdit.setIsModified(true);
 
-        postRepository.save(postToEdit);
+        return postRepository.save(postToEdit);
     }
 
-    private void deleteOldAttachments(Post post) throws IOException {
-        for (PostAttachment postAttachment : post.getPostAttachments()) {
-            fileStorageService.deleteFile(postAttachment.getInternalUrl());
-        }
-    }
-
-    public Post deletePostAttachment(Long postId, Long attachmentId) throws ResponseException {
+    public Post deletePostAttachment(Long postId, Long attachmentId, @CurrentUser User user) throws ResponseException {
         var post = getPost(postId);
+        validateAuthorization(post, user);
 
         Iterator<PostAttachment> it = post.getPostAttachments().iterator();
         while (it.hasNext()) {
@@ -94,12 +90,76 @@ public class ForumService {
                 break;
             }
         }
+
+        post.setIsModified(true);
+
         return postRepository.save(post);
     }
 
-    public Post addPostAttachment(Long postId, MultipartFile image) throws ResponseException, IOException {
+    private void deleteOldAttachments(Post post) throws IOException {
+        for (PostAttachment postAttachment : post.getPostAttachments()) {
+            fileStorageService.deleteFile(postAttachment.getInternalUrl());
+        }
+    }
+
+    public Post addPostAttachment(Long postId, MultipartFile image, @CurrentUser User user) throws ResponseException, IOException {
         var post = getPost(postId);
+        validateAuthorization(post, user);
+
         post.getPostAttachments().add(getAttachments(new MultipartFile[]{image}, post).get(0));
+        post.setIsModified(true);
+
         return postRepository.save(post);
+    }
+
+    public Post addPostReply(@CurrentUser User author, Long postId, String reply) throws ResponseException {
+        var post = getPost(postId);
+        Reply newReply = new Reply();
+        newReply.setText(reply);
+        newReply.setPost(post);
+        newReply.setAuthor(author);
+
+        post.getReplies().add(newReply);
+        return postRepository.save(post);
+    }
+
+    public Post deletePostReply(Long postId, Long replyId, @CurrentUser User user) throws ResponseException {
+        var post = getPost(postId);
+
+        Iterator<Reply> it = post.getReplies().iterator();
+        while (it.hasNext()) {
+            Reply reply = it.next();
+            if (reply.getId().equals(replyId)) {
+                validateAuthorization(reply, user);
+                it.remove();
+                break;
+            }
+        }
+
+        return postRepository.save(post);
+    }
+
+    public Post editPostReply(Long postId, Long replyId, String newText, @CurrentUser User user) throws ResponseException, IOException {
+        var post = getPost(postId);
+        validateAuthorization(post, user);
+
+        Iterator<Reply> it = post.getReplies().iterator();
+        while (it.hasNext()) {
+            Reply reply = it.next();
+            if (reply.getId().equals(replyId)) {
+                validateAuthorization(reply, user);
+                reply.setText(newText);
+                reply.setIsModified(true);
+                break;
+            }
+        }
+
+        return postRepository.save(post);
+    }
+
+    protected void validateAuthorization(Content content, User user) {
+        if (!Objects.equals(user.getId(), content.getAuthor().getId())) {
+            throw new AuthenticationCredentialsNotFoundException("Current user can't operate on this content");
+        }
     }
 }

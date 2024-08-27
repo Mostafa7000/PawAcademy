@@ -60,32 +60,56 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) throws ResponseException, IOException {
-        forumService.deletePost(postId);
+    public ResponseEntity<?> deletePost(@PathVariable Long postId, @CurrentUser User user) throws ResponseException, IOException {
+        forumService.deletePost(postId, user);
+
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<?> editPost(
+    public PostDto editPost(
             @PathVariable Long postId,
             @RequestPart(value = "post", required = false) String post,
-            @RequestPart(value = "images", required = false) MultipartFile[] attachments
+            @RequestPart(value = "images", required = false) MultipartFile[] attachments,
+            @CurrentUser User user
     ) throws ResponseException, IOException {
-        forumService.editPost(postId, post, attachments);
-        return ResponseEntity.noContent().build();
+        var modifiedPost = forumService.editPost(postId, post, attachments, user);
+
+        return mapper.map(modifiedPost, PostDto.class);
     }
 
     @DeleteMapping("/{postId}/attachments/{attachmentId}")
-    public PostDto deleteAttachment(@PathVariable Long postId, @PathVariable Long attachmentId) throws ResponseException {
-        var modifiedPost = forumService.deletePostAttachment(postId, attachmentId);
+    public PostDto deleteAttachment(@PathVariable Long postId, @PathVariable Long attachmentId, @CurrentUser User user) throws ResponseException {
+        var modifiedPost = forumService.deletePostAttachment(postId, attachmentId, user);
 
         return mapper.map(modifiedPost, PostDto.class);
     }
 
     @PostMapping("/{postId}/attachments")
-    public ResponseEntity<?> addAttachment(@PathVariable Long postId, @RequestParam MultipartFile attachment) throws ResponseException, IOException {
-        forumService.addPostAttachment(postId, attachment);
+    public PostDto addAttachment(@PathVariable Long postId, @RequestParam MultipartFile attachment, @CurrentUser User user) throws ResponseException, IOException {
+        var modifiedPost = forumService.addPostAttachment(postId, attachment, user);
 
-        return ResponseEntity.created(getRelocationUri("posts/" + postId)).build();
+        return mapper.map(modifiedPost, PostDto.class);
+    }
+
+    @PostMapping("/{postId}/replies")
+    public PostDto addReply(@PathVariable Long postId, @RequestPart("reply") String reply, @CurrentUser User user) throws ResponseException {
+        var modifiedPost = forumService.addPostReply(user, postId, reply);
+
+        return mapper.map(modifiedPost, PostDto.class);
+    }
+
+    @DeleteMapping("/{postId}/replies/{replyId}")
+    public PostDto deleteReply(@PathVariable Long postId, @PathVariable Long replyId, @CurrentUser User user) throws ResponseException {
+        var modifiedPost = forumService.deletePostReply(postId, replyId, user);
+
+        return mapper.map(modifiedPost, PostDto.class);
+    }
+
+    @PatchMapping("/{postId}/replies/{replyId}")
+    public PostDto editReply(@PathVariable Long postId, @PathVariable Long replyId, @RequestParam String newReply, @CurrentUser User user) throws ResponseException, IOException {
+        var modifiedPost = forumService.editPostReply(postId, replyId, newReply, user);
+
+        return mapper.map(modifiedPost, PostDto.class);
     }
 }
