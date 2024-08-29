@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import pawacademy.ResponseException;
 import pawacademy.services.JwtUtil;
 import pawacademy.solution.user.application.UserService;
+import pawacademy.solution.user.application.dto.ResetPasswordDto;
 import pawacademy.solution.user.application.dto.TokenDto;
 import pawacademy.solution.user.application.dto.UserLoginDto;
 import pawacademy.solution.user.application.dto.UserRegistrationDto;
-import pawacademy.solution.user.domain.User;
 
 import javax.validation.Valid;
 
@@ -41,10 +41,10 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<?> authenticateUser(@RequestBody UserLoginDto loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody UserLoginDto loginRequest) throws ResponseException {
         var authentication = authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
-        if (!isEmailVerified(authentication)) {
+        if (!userService.isEmailVerified(loginRequest.getEmail())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Email not verified");
         }
 
@@ -61,11 +61,6 @@ public class AuthController {
         return authentication;
     }
 
-    private boolean isEmailVerified(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return user.isVerified();
-    }
-
     @GetMapping("/registrationConfirm")
     public String confirmRegistration(@RequestParam("token") String token, Model model) {
         try {
@@ -76,4 +71,21 @@ public class AuthController {
 
         return "verification-success";
     }
+
+    @PostMapping("/forgetPassword")
+    @ResponseBody
+    public String forgetPassword(@RequestParam String email) throws ResponseException {
+        userService.SendResetPasswordTokenTo(email);
+
+        return "Reset password token sent successfully";
+    }
+
+    @PostMapping("/resetPassword")
+    @ResponseBody
+    public String resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) throws ResponseException {
+        userService.resetPassword(resetPasswordDto);
+
+        return "Password reset successfully";
+    }
+
 }

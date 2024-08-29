@@ -49,6 +49,7 @@ public class User {
 
     private String verificationToken;
     private boolean isVerified = false;
+    private String rpToken;
 
     public String getAvatar() {
         return UriService.getUri(avatar);
