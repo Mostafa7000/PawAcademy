@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Cloneable {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,10 +47,8 @@ public class User implements Cloneable {
     @NotBlank
     private String gender;
 
-    @Override
-    public User clone() {
-        return new User(this.id, this.email, this.password, this.fullName, this.avatar, this.birthDate, this.gender);
-    }
+    private String verificationToken;
+    private boolean isVerified = false;
 
     public String getAvatar() {
         return UriService.getUri(avatar);
