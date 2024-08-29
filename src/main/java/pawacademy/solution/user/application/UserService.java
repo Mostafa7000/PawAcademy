@@ -59,8 +59,7 @@ public class UserService {
 
     private String generateOtp() {
         SecureRandom secureRandom = new SecureRandom();
-        int otp = secureRandom.nextInt(1000, 10000);
-
+        int otp = secureRandom.nextInt(9000) + 1000;
         return String.valueOf(otp);
     }
 

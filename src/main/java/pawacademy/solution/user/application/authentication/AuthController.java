@@ -1,7 +1,7 @@
 package pawacademy.solution.user.application.authentication;
 
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import pawacademy.ResponseException;
 import pawacademy.services.JwtUtil;
 import pawacademy.solution.user.application.UserService;
-import pawacademy.solution.user.application.dto.ResetPasswordDto;
-import pawacademy.solution.user.application.dto.TokenDto;
-import pawacademy.solution.user.application.dto.UserLoginDto;
-import pawacademy.solution.user.application.dto.UserRegistrationDto;
+import pawacademy.solution.user.application.dto.*;
 
 import javax.validation.Valid;
 
@@ -33,19 +30,19 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseBody
-    public String registerUser(@Valid @RequestBody UserRegistrationDto newUser) throws ResponseException {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto newUser) throws ResponseException {
         userService.registerUser(newUser);
-
-        return "Verification email sent successfully";
+        var message = RegisterDto.builder().message("Verification email sent successfully").build();
+        return ResponseEntity.ok(message);
     }
 
+    @SneakyThrows
     @PostMapping("/login")
-    @ResponseBody
-    public ResponseEntity<?> authenticateUser(@RequestBody UserLoginDto loginRequest) throws ResponseException {
+    public ResponseEntity<?> authenticateUser(@RequestBody UserLoginDto loginRequest){
         var authentication = authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
         if (!userService.isEmailVerified(loginRequest.getEmail())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Email not verified");
+            throw new ResponseException("Email not verified");
         }
 
         String jwt = jwtUtil.generateToken(loginRequest.getEmail());

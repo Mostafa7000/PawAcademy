@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pawacademy.services.FileStorageService;
 import pawacademy.services.UriService;
 import pawacademy.solution.user.application.authentication.CurrentUser;
+import pawacademy.solution.user.application.dto.AvatarDto;
 import pawacademy.solution.user.application.dto.PasswordResetDto;
 import pawacademy.solution.user.application.dto.UserEditingDto;
 import pawacademy.solution.user.domain.User;
@@ -61,8 +62,10 @@ public class UserController {
         String fileName = fileStorageService.storeFile(file, "avatars");
         user.setAvatar(fileName);
         userRepository.save(user);
-
-        return ResponseEntity.ok(UriService.getUri(fileName));
+        var avatarUrl = AvatarDto.builder()
+                .avatarUrl(UriService.getUri(fileName))
+                .build();
+        return ResponseEntity.ok(avatarUrl);
     }
 
     @PostMapping("/reset-password")
