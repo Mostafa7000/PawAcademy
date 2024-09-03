@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostDto extends ReplyDto {
+    private String title;
     private List<AttachmentDto> attachments;
     private List<ReplyDto> replies;
 }

@@ -25,10 +25,11 @@ public class ForumService {
     @Autowired
     FileStorageService fileStorageService;
 
-    public Post publish(@CurrentUser User user, String post, MultipartFile[] attachments) {
+    public Post publish(@CurrentUser User user, String post,String title, MultipartFile[] attachments) {
 
         Post toBeSavedPost = new Post();
         toBeSavedPost.setText(post);
+        toBeSavedPost.setTitle(title);
         toBeSavedPost.setAuthor(user);
         toBeSavedPost.setPostAttachments(getAttachments(attachments, toBeSavedPost));
 

@@ -24,6 +24,9 @@ public class Post implements Content{
     private Long id;
 
     @NotBlank
+    private String title;
+
+    @NotBlank
     private String text;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

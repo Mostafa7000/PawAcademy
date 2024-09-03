@@ -29,9 +29,10 @@ public class PostController {
     public ResponseEntity<?> publishPost(
             @CurrentUser User user,
             @RequestPart("post") String post,
+            @RequestPart("title") String title,
             @RequestPart("images") MultipartFile[] attachments
     ) {
-        var publishedPost = forumService.publish(user, post, attachments);
+        var publishedPost = forumService.publish(user, post, title, attachments);
 
         return ResponseEntity.created(getRelocationUri("posts/" + publishedPost.getId())).build();
     }
