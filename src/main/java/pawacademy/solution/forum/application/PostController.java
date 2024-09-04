@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pawacademy.ResponseException;
 import pawacademy.services.UriService;
 import pawacademy.solution.forum.application.dto.PostDto;
+import pawacademy.solution.forum.application.dto.ReplyDto;
 import pawacademy.solution.user.application.authentication.CurrentUser;
 import pawacademy.solution.user.domain.User;
 
@@ -98,6 +99,17 @@ public class PostController {
         var modifiedPost = forumService.addPostReply(user, postId, reply);
 
         return mapper.map(modifiedPost, PostDto.class);
+    }
+
+    @GetMapping("/{postId}/replies")
+    public List<ReplyDto> getReplies(@PathVariable Long postId, @CurrentUser User user) throws ResponseException {
+        var post = forumService.getPost(postId);
+
+        var result = new ArrayList<ReplyDto>();
+        for (var reply : post.getReplies()) {
+            result.add(mapper.map(reply, ReplyDto.class));
+        }
+        return result;
     }
 
     @DeleteMapping("/{postId}/replies/{replyId}")
