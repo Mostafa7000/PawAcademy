@@ -7,7 +7,6 @@ doc/
 
 /media/avatars
 /media/forum
-/src/main/resources/application.yml
 
 ### STS ###
 .apt_generated
@@ -17,6 +16,7 @@ doc/
 .settings
 .springBeans
 .sts4-cache
+.env
 
 ### IntelliJ IDEA ###
 .idea

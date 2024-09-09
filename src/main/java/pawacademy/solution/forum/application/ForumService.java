@@ -56,14 +56,14 @@ public class ForumService {
         return postRepository.findById(id).orElseThrow(() -> new ResponseException("Post not found"));
     }
 
-    public void deletePost(Long id, @CurrentUser User user) throws ResponseException, IOException {
+    public void deletePost(Long id, User user) throws ResponseException, IOException {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResponseException("Post Not found"));
         validateAuthorization(post, user);
         deleteOldAttachments(post);
         postRepository.deleteById(id);
     }
 
-    public Post editPost(Long id, String post, MultipartFile[] images, @CurrentUser User user) throws ResponseException, IOException {
+    public Post editPost(Long id, String post, MultipartFile[] images, User user) throws ResponseException, IOException {
         Post postToEdit = postRepository.findById(id).orElseThrow(() -> new ResponseException("Post Not found"));
         validateAuthorization(postToEdit, user);
         if (!Objects.isNull(post)) {
@@ -79,7 +79,7 @@ public class ForumService {
         return postRepository.save(postToEdit);
     }
 
-    public Post deletePostAttachment(Long postId, Long attachmentId, @CurrentUser User user) throws ResponseException {
+    public Post deletePostAttachment(Long postId, Long attachmentId, User user) throws ResponseException {
         var post = getPost(postId);
         validateAuthorization(post, user);
 
@@ -103,7 +103,7 @@ public class ForumService {
         }
     }
 
-    public Post addPostAttachment(Long postId, MultipartFile image, @CurrentUser User user) throws ResponseException, IOException {
+    public Post addPostAttachment(Long postId, MultipartFile image, User user) throws ResponseException, IOException {
         var post = getPost(postId);
         validateAuthorization(post, user);
 
@@ -113,7 +113,7 @@ public class ForumService {
         return postRepository.save(post);
     }
 
-    public Post addPostReply(@CurrentUser User author, Long postId, String reply) throws ResponseException {
+    public Post addPostReply(User author, Long postId, String reply) throws ResponseException {
         var post = getPost(postId);
         Reply newReply = new Reply();
         newReply.setText(reply);
