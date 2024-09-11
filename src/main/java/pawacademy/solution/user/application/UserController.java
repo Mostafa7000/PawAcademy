@@ -51,10 +51,9 @@ public class UserController {
     public ResponseEntity<?> uploadAvatar(@RequestPart("image") MultipartFile file, @CurrentUser User user) {
         try {
             if (user.getAvatar() != null) {
-                fileStorageService.deleteFile(user.getAvatar().substring(user.getAvatar().indexOf("media/")));
+                fileStorageService.deleteFile(user.getInternalAvatarUrl());
             }
         } catch (NoSuchFileException ignored) {
-
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Could not delete old avatar");
         }

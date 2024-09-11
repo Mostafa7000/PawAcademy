@@ -63,10 +63,10 @@ public class AuthController {
         try {
             userService.verifyUser(token);
         } catch (ResponseException e) {
-            return "verification-error";
+            return "emails/verification-error";
         }
 
-        return "verification-success";
+        return "emails/verification-success";
     }
 
     @PostMapping("/forgetPassword")

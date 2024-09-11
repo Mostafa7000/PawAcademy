@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{head :: head('Edit units')}"></div>
+
+<body>
+<main>
+    <div class="container">
+        <h1><span th:text="${unit.name}"/></h1>
+        <div class="form-group">
+            <img id="image-preview" th:src="${unit.image}" alt="Unit Image"
+                 th:if="${unit.image != null || !#strings.isEmpty(unit.image)}"/>
+            <img id="image-preview" th:src="'/media/units/placeholder.png'" alt="Unit Image"
+                 th:unless="${unit.image != null || !#strings.isEmpty(unit.image)}"/>
+        </div>
+        <form action="#" th:action="@{/admin/units/update/{id}(id=${unit.id})}" th:object="${unit}" method="post"
+              enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" th:field="*{name}" required/>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input type="text" id="description" th:field="*{description}" required/>
+            </div>
+            <div class="form-group">
+                <label for="exam">Exam:</label>
+                <input type="text" id="exam" th:field="*{exam}"/>
+            </div>
+            <div class="form-group">
+                <label for="image">Image:</label>
+                <input type="file" id="image" name="uploadedImage" accept="image/*"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save">
+            </div>
+        </form>
+    </div>
+
+    <hr>
+
+    <div th:replace="~{lessons/list :: lessons-list}"></div>
+</main>
+
+<div th:replace="~{footer :: footer}"></div>
+
+<script>
+    function previewImage(event) {
+        const imagePreview = document.getElementById('image-preview');
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);  // Convert the file to base64 and set it as the image src
+        }
+    }
+
+    const imageInput = document.getElementById('image');
+    imageInput.addEventListener('change', previewImage);
+</script>
+</body>
+</html>

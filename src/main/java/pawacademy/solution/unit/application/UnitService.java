@@ -50,11 +50,9 @@ public class UnitService {
 
     @Transactional
     public List<LessonDto> getLessons(long unitId, @CurrentUser User user) {
-        var unit = unitRepository.findById(unitId).orElseThrow();
         ModelMapper mapper = new ModelMapper();
-        // Define property maps for nested objects
         List<LessonDto> result = new ArrayList<>();
-        for (var lesson : unit.getLessons()) {
+        for (var lesson : getLessonsByUnitId(unitId)) {
             boolean passed = isLessonPassedByUser(lesson, user);
 
             var lessonDto = mapper.map(lesson, LessonDto.class);
@@ -63,6 +61,11 @@ public class UnitService {
         }
 
         return result;
+    }
+    @Transactional
+    public List<Lesson> getLessonsByUnitId(long unitId) {
+        var unit = unitRepository.findById(unitId).orElseThrow();
+        return unit.getLessons();
     }
 
     public CompletedLesson markLessonAsCompleted(User user, Long unitId, Long lessonId) {

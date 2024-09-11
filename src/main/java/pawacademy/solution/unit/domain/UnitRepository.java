@@ -16,4 +16,7 @@ public interface UnitRepository extends JpaRepository<Unit, Long> {
             "GROUP BY u.id, u.name",
             nativeQuery = true)
     List<Object[]> findWithCompletedLessonsAndTotalLessonsByUserId(@Param("userId") Long userId);
+
+    @Query("select u.image from Unit u where u.id = :unitId")
+    String findImageByUnitId(Long unitId);
 }
