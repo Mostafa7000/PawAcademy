@@ -3,6 +3,7 @@ package pawacademy.solution.unit.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import pawacademy.services.UriService;
 import pawacademy.solution.lesson.domain.Lesson;
 
@@ -27,6 +28,7 @@ public class Unit implements Cloneable {
     private String exam;
     private String image;
     @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Lesson> lessons = new ArrayList<>();
 
     @Override

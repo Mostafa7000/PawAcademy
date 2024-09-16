@@ -3,6 +3,9 @@ package pawacademy.solution.lesson.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import pawacademy.solution.question.domain.Question;
 import pawacademy.solution.unit.domain.Unit;
 
@@ -26,11 +29,13 @@ public class Lesson implements Cloneable {
     private String content;
     private String video;
 
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Question> questions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_id")
+    @ToString.Exclude
     private Unit unit;
 
     @Override

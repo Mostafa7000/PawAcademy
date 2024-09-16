@@ -173,3 +173,30 @@ button a:hover {
     !important;
     background-color: #a0a0a0;
 }
+
+
+.input-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.input-wrapper input[type="text"] {
+    padding-right: 25px; /* Add padding to the right to make space for the button */
+}
+
+.remove-button {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: red;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.remove-button:hover {
+    color: darkred;
+    background: none;
+}

@@ -9,6 +9,8 @@
             <a th:href="@{/admin/units/edit/{id}(id=${unitId})}">Return To Unit</a>
         </button>
         <h1><span th:text="${lesson.name}"></span></h1>
+
+        <!-- Form to Edit Lesson -->
         <form action="#" th:action="@{/admin/lessons/update/{id}(id=${lesson.id}, unitId=${unitId})}"
               th:object="${lesson}" method="post">
             <div class="form-group">
@@ -26,9 +28,96 @@
             <div class="form-group">
                 <input type="submit" value="Save">
             </div>
+
+            <!-- Questions Section -->
+            <h2>Questions</h2>
+            <div id="questions-container">
+                <div th:each="question, questionStat : ${lesson.questions}" th:id="'question-' + __${question.id}__">
+                    <input type="text" th:field="*{questions[__${questionStat.index}__].id}" hidden/>
+
+                    <div class="form-group">
+                        <label for="questionText">Question:</label>
+                        <input id="questionText" type="text" th:field="*{questions[__${questionStat.index}__].text}"
+                               required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="questionType">Type:</label>
+                        <select id="questionType" th:field="*{questions[__${questionStat.index}__].type}"
+                                th:disabled="${question.id != null}">
+                            <option value="MULTIPLE_CHOICE">Multiple Choice</option>
+                            <option value="TRUE_FALSE">True/False</option>
+                        </select>
+                    </div>
+
+                    <!-- Options Section for Multiple Choice -->
+                    <div class="options-container" th:if="${question.type.name() == 'MULTIPLE_CHOICE'}">
+                        <h4>Options:</h4>
+                        <div th:each="option, optionStat : ${question.options}" class="input-container">
+                            <div class="option-group">
+                                <input type="text"
+                                       th:field="*{questions[__${questionStat.index}__].options[__${optionStat.index}__].id}"
+                                       hidden/>
+
+                                <!-- Option input field with remove button inside -->
+                                <div class="input-wrapper">
+                                    <input type="text"
+                                           th:field="*{questions[__${questionStat.index}__].options[__${optionStat.index}__].text}"
+                                           required/>
+                                    <button type="button" class="remove-button" onclick="removeOption(this)">&#10006;
+                                    </button>
+                                </div>
+                                <!-- Radio button to select the correct answer -->
+                                <input type="radio" th:field="*{questions[__${questionStat.index}__].correctAnswerId}"
+                                       th:value="${option.id}"/>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addOption(this)">Add Option</button>
+                    </div>
+                    <!-- For True/False Questions -->
+                    <div th:if="${question.type.name() == 'TRUE_FALSE'}">
+                        <h4>True/False Options:</h4>
+                        <label><input type="radio" th:field="*{questions[__${questionStat.index}__].correctAnswerId}"
+                                      th:value="1"/>True</label>
+                        <label><input type="radio" th:field="*{questions[__${questionStat.index}__].correctAnswerId}"
+                                      th:value="2"/>False</label>
+                    </div>
+                </div>
+                <button type="submit">Save Questions</button>
+            </div>
         </form>
     </div>
 </main>
 <div th:replace="~{footer :: footer}"></div>
+
+<script>
+    function addOption(button) {
+        const container = button.parentElement.querySelector('.input-container');
+        const optionGroup = document.createElement('div');
+        optionGroup.classList.add('option-group');
+        optionGroup.innerHTML = `
+        <div class="input-wrapper">
+            <input type="text" name="optionText" required />
+            <button type="button" class="remove-button" onclick="removeOption(this)">&#10006;</button>
+        </div>
+        <input type="radio" name="correctOption" />
+        `;
+        container.appendChild(optionGroup);
+    }
+
+    function removeOption(button) {
+        const optionGroup = button.parentElement.parentElement;
+        optionGroup.remove();
+    }
+
+    document.querySelector('form').addEventListener('submit', enableSelections);
+
+    function enableSelections() {
+        document.querySelectorAll('select').forEach(select => {
+            select.disabled = false;
+        })
+    }
+
+</script>
 </body>
 </html>
