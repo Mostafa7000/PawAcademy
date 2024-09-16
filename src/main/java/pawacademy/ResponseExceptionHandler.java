@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ResponseExceptionHandler {
@@ -22,6 +23,22 @@ public class ResponseExceptionHandler {
 
         return ResponseEntity
                 .status(e.getStatusCode())
+                .body(body);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        System.out.println(e.getMessage());
+
+        var body = Response.builder()
+                .timestamp(LocalDateTime.now())
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .message(e.getMessage())
+                .data(null)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(body);
     }
 
