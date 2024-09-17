@@ -50,14 +50,22 @@ public class LessonAdminController {
 
     @GetMapping("/edit/{id}")
     public String editLessonForm(@PathVariable Long id, @RequestParam Long unitId, Model model) {
-        model.addAttribute("lesson", lessonRepository.findById(id).orElse(new Lesson()));
+        var lesson = lessonRepository.findById(id).orElse(new Lesson());
+        model.addAttribute("lesson", lesson);
         model.addAttribute("unitId", unitId);
+
         return "lessons/edit";
     }
 
     @PostMapping("/update/{id}")
     @Transactional
     public String updateLesson(@PathVariable Long id, @ModelAttribute("lesson") Lesson lesson, @RequestParam Long unitId) throws ResponseException {
+        for (Question question : lesson.getNewQuestions()) {
+            if (question != null) {
+                lesson.getQuestions().add(question);
+            }
+        }
+
         for (Question question : lesson.getQuestions()) {
             question.setLesson(lesson);
 

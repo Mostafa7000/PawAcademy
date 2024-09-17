@@ -86,30 +86,82 @@
                                       th:value="2"/>False</label>
                     </div>
                 </div>
-                <button type="submit">Save Questions</button>
             </div>
+            <hr>
+            <br>
+            <button type="button" th:onclick="'addQuestion('+${lesson.questions.size()} + ')'">Add Question</button>
+            <hr>
+            <br>
+            <button type="submit">Save Questions</button>
         </form>
     </div>
 </main>
 <div th:replace="~{footer :: footer}"></div>
 
 <script>
+
+    let newQuestions = 0;
+
+    function addQuestion(currentQuestionsCount) {
+        const newQuestionIndex = currentQuestionsCount + newQuestions;
+
+        const container = document.getElementById('questions-container');
+        const newQuestion = document.createElement('div');
+        newQuestion.innerHTML = `
+        <div class="form-group">
+            <label for="questionText">Question:</label>
+            <input id="questionText" type="text" name="newQuestions[${newQuestionIndex}].text" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="questionType">Type:</label>
+            <select id="questionType" name="newQuestions[${newQuestionIndex}].type" onchange="showOptions(this, ${newQuestionIndex})">
+                <option value="" selected disabled hidden>Choose type..</option>
+                <option value="MULTIPLE_CHOICE">Multiple Choice</option>
+                <option value="TRUE_FALSE">True/False</option>
+            </select>
+        </div>
+
+        <h4>Options:</h4>
+        <div id="options-${newQuestionIndex}">
+        </div>
+        `;
+
+        newQuestions++;
+        container.appendChild(newQuestion);
+    }
+
+    function showOptions(select, questionIndex) {
+        const optionsContainer = document.getElementById('options-' + questionIndex);
+
+        if (select.value === 'MULTIPLE_CHOICE') {
+            optionsContainer.innerHTML = `
+            <div class="input-container">
+            </div>
+            <button type="button" onclick="addOption(this, ${questionIndex}, 'newQuestions')">Add Option</button>
+            `
+        } else {
+            optionsContainer.innerHTML = `
+            <label><input type="radio" name="newQuestions[${questionIndex}].correctAnswerId" value="1" checked/>True</label>
+            <label><input type="radio" name="newQuestions[${questionIndex}].correctAnswerId" value="2"/>False</label>
+            `
+        }
+    }
+
+
     let newOptionId = 0;
 
-    function addOption(button, questionIndex) {
-        const question = button.parentElement.parentElement;
-        const questionId = question.getAttribute('id').substring('question-'.length);
-
+    function addOption(button, questionIndex, questionType = 'questions') {
         const container = button.parentElement.querySelector('.input-container');
         const newOption = document.createElement('div');
-        newOption.classList.add('option-group', 'new', 'question-' + questionId);
+        newOption.classList.add('option-group');
         newOptionId = newOptionId + 1;
         newOption.innerHTML = `
         <div class="input-wrapper">
-            <input type="text" name="questions[${questionIndex}].newOptions[${newOptionId}].text" required />
+            <input type="text" name="${questionType}[${questionIndex}].newOptions[${newOptionId}].text" required />
             <button type="button" class="remove-button" onclick="removeOption(this)">&#10006;</button>
         </div>
-        <input type="radio" name="questions[${questionIndex}].correctAnswerId" value="${-newOptionId}"/>
+        <input type="radio" name="${questionType}[${questionIndex}].correctAnswerId" value="${-newOptionId}" required/>
         `;
         container.appendChild(newOption);
     }
@@ -118,8 +170,14 @@
 
     function removeOption(button) {
         const optionGroup = button.parentElement.parentElement;
-        const id = optionGroup.getAttribute('id').substring('option-'.length);
-        const url = `/admin/lessons/options/${id}`; // Replace with the actual URL
+        const idAttribute = optionGroup.getAttribute('id');
+        if (!idAttribute) { // newly added option
+            optionGroup.remove();
+            return;
+        }
+
+        const optionId = idAttribute.substring('option-'.length);
+        const url = `/admin/lessons/options/${optionId}`; // Replace with the actual URL
         fetch(url, {
             method: 'DELETE', // Replace with the actual method
         }).then((response) => {

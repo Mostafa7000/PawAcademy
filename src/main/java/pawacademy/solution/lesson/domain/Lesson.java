@@ -12,6 +12,7 @@ import pawacademy.solution.unit.domain.Unit;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -33,13 +34,11 @@ public class Lesson implements Cloneable {
     @Fetch(FetchMode.SUBSELECT)
     private List<Question> questions = new ArrayList<>();
 
+    @Transient
+    private List<Question> newQuestions = new ArrayList<>(Collections.nCopies(10, null));
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_id")
     @ToString.Exclude
     private Unit unit;
-
-    @Override
-    public Lesson clone() {
-        return new Lesson(this.id, this.name, this.content, this.video, this.questions, unit);
-    }
 }
