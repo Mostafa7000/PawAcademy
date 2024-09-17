@@ -72,7 +72,10 @@
                                        th:value="${option.id}"/>
                             </div>
                         </div>
-                        <button type="button" th:onclick="'addOption(this,'+ ${questionStat.index} +')'">Add Option</button>
+                        <button type="button"
+                                th:onclick="'addOption(this,'+ ${questionStat.index} + ')'">
+                            Add Option
+                        </button>
                     </div>
                     <!-- For True/False Questions -->
                     <div th:if="${question.type.name() == 'TRUE_FALSE'}">
@@ -91,6 +94,8 @@
 <div th:replace="~{footer :: footer}"></div>
 
 <script>
+    let newOptionId = 0;
+
     function addOption(button, questionIndex) {
         const question = button.parentElement.parentElement;
         const questionId = question.getAttribute('id').substring('question-'.length);
@@ -98,42 +103,18 @@
         const container = button.parentElement.querySelector('.input-container');
         const newOption = document.createElement('div');
         newOption.classList.add('option-group', 'new', 'question-' + questionId);
+        newOptionId = newOptionId + 1;
         newOption.innerHTML = `
         <div class="input-wrapper">
-            <input type="text" name="optionText" required />
+            <input type="text" name="questions[${questionIndex}].newOptions[${newOptionId}].text" required />
             <button type="button" class="remove-button" onclick="removeOption(this)">&#10006;</button>
         </div>
-        <input type="radio" name="questions[${questionIndex}].correctAnswerId" />
+        <input type="radio" name="questions[${questionIndex}].correctAnswerId" value="${-newOptionId}"/>
         `;
         container.appendChild(newOption);
     }
 
     const form = document.querySelector('form');
-
-    form.addEventListener('submit', (e) => {
-        const newOptions = document.createElement('input');
-        newOptions.type = 'hidden';
-        newOptions.name = 'newOptions';
-
-        const options = document.querySelectorAll('.new');
-        const value = Array.from(options).reduce((result, option) => {
-            const questionId = option.classList[2].split('-')[1];
-            const text = option.querySelector('input[type="text"]').value;
-            const correct = option.querySelector('input[type="radio"]').checked ? 1 : 0;
-            if (!result[questionId]) {
-                result[questionId] = [];
-            }
-            if (text) {
-                result[questionId].push({text, correct});
-            }
-            return result;
-        }, {});
-
-        if (Object.keys(value).length) {
-            newOptions.value = JSON.stringify(value);
-            form.appendChild(newOptions);
-        }
-    });
 
     function removeOption(button) {
         const optionGroup = button.parentElement.parentElement;
@@ -141,13 +122,16 @@
         const url = `/admin/lessons/options/${id}`; // Replace with the actual URL
         fetch(url, {
             method: 'DELETE', // Replace with the actual method
-        }).then(() => {
-            optionGroup.remove();
+        }).then((response) => {
+            if (!response.ok) {
+                alert("Can't remove selected option");
+                console.error('Error removing option');
+            } else {
+                optionGroup.remove();
+                window.location.reload();
+            }
         }).catch((error) => {
-            alert("Can't remove correct Option");
-            console.error('Error removing option: ', error);
-        }).finally(() => {
-            location.reload();
+            console.error(error);
         });
     }
 

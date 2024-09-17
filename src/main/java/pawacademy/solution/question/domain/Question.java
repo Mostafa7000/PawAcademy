@@ -2,20 +2,19 @@ package pawacademy.solution.question.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import pawacademy.solution.lesson.domain.Lesson;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "questions")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class Question {
     @Id
@@ -37,12 +36,17 @@ public class Question {
     private QuestionType type;
 
     @Transient
-    private String typeString;
+    private List<Option> newOptions = new ArrayList<>(Collections.nCopies(10, null));
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Option> options = new ArrayList<>();
+
     @OneToOne
     private Option correctAnswer;
+
+    public Question() {
+
+    }
 
     public List<Option> getOptions() {
         if (type == QuestionType.TRUE_FALSE) {
@@ -57,13 +61,5 @@ public class Question {
         }
 
         return correctAnswerId;
-    }
-
-    public String getTypeString() {
-        if (Objects.isNull(typeString)) {
-            typeString = type.toString();
-        }
-
-        return typeString;
     }
 }
