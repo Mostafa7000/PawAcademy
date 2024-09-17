@@ -1,5 +1,7 @@
 package pawacademy.solution.lesson.application;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,10 @@ import pawacademy.solution.question.domain.Option;
 import pawacademy.solution.question.domain.OptionRepository;
 import pawacademy.solution.question.domain.Question;
 import pawacademy.solution.unit.domain.UnitRepository;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/lessons")
@@ -56,7 +62,17 @@ public class LessonAdminController {
 
     @PostMapping("/update/{id}")
     @Transactional
-    public String updateLesson(@PathVariable Long id, @ModelAttribute("lesson") Lesson lesson, @RequestParam Long unitId) throws ResponseException {
+    public String updateLesson(@PathVariable Long id, @ModelAttribute("lesson") Lesson lesson, @RequestParam Long unitId, String newOptions) throws ResponseException {
+        // Parse the newOptions JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<Long, List<Map<String, Object>>> newOptionsMap;
+        try {
+            newOptionsMap = objectMapper.readValue(newOptions, new TypeReference<>() {
+            });
+        } catch (IOException e) {
+            throw new ResponseException("Error parsing new options JSON");
+        }
+
         for (Question question : lesson.getQuestions()) {
             question.setLesson(lesson);
             if (question.getCorrectAnswerId() != null) {
@@ -67,15 +83,27 @@ public class LessonAdminController {
             for (Option option : question.getOptions()) {
                 option.setQuestion(question);
             }
+
+            // Check if there are new options for this question in the newOptions JSON
+            if (newOptionsMap.containsKey(question.getId())) {
+                List<Map<String, Object>> optionsList = newOptionsMap.get(question.getId());
+
+                // Add new options from the newOptions JSON
+                for (Map<String, Object> optionData : optionsList) {
+                    Option newOption = new Option();
+                    newOption.setText((String) optionData.get("text"));
+                    if (optionData.get("correct").equals(1)) {
+                        question.setCorrectAnswer(newOption);
+                    }
+                    newOption.setQuestion(question);  // Link option to the question
+                    question.getOptions().add(newOption);  // Add the new option to the question's options
+                }
+            }
         }
 
         var unit = unitRepository.findById(unitId).orElseThrow(() -> new ResponseException("Error while retrieving unit"));
         lesson.setUnit(unit);
 
-//        var originalLesson = lessonRepository.findById(id).orElseThrow(() -> new ResponseException("Lesson not found"));
-//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-//        mapper.getConfiguration().setSkipNullEnabled(true);
-//        mapper.map(lesson, originalLesson);
         lessonRepository.save(lesson);
         // lessonRepository.update(id, lesson.getName(), lesson.getContent(), lesson.getVideo());
         return "redirect:/admin/units/edit/" + unitId;
@@ -85,5 +113,10 @@ public class LessonAdminController {
     public String deleteLesson(@PathVariable Long id, @RequestParam Long unitId) {
         lessonRepository.deleteById(id);
         return "redirect:/admin/units/edit/" + unitId;
+    }
+
+    @DeleteMapping("/options/{id}")
+    public void deleteOption(@PathVariable Long id) {
+        optionRepository.deleteById(id);
     }
 }
