@@ -13,6 +13,7 @@ import pawacademy.solution.lesson.domain.LessonRepository;
 import pawacademy.solution.question.domain.Option;
 import pawacademy.solution.question.domain.OptionRepository;
 import pawacademy.solution.question.domain.Question;
+import pawacademy.solution.question.domain.QuestionRepository;
 import pawacademy.solution.unit.domain.UnitRepository;
 
 @Controller
@@ -25,6 +26,8 @@ public class LessonAdminController {
     private UnitRepository unitRepository;
     @Autowired
     private OptionRepository optionRepository;
+    @Autowired
+    private QuestionRepository questionRepository;
     private ModelMapper mapper = new ModelMapper();
 
     @GetMapping
@@ -95,8 +98,7 @@ public class LessonAdminController {
         lesson.setUnit(unit);
 
         lessonRepository.save(lesson);
-        // lessonRepository.update(id, lesson.getName(), lesson.getContent(), lesson.getVideo());
-        return "redirect:/admin/units/edit/" + unitId;
+        return "redirect:/admin/lessons/edit/" + id + "?unitId=" + unitId;
     }
 
     @GetMapping("/delete/{id}")
@@ -110,6 +112,13 @@ public class LessonAdminController {
         optionRepository.deleteById(id);
 
         // Return 204 No Content on success
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/questions/{id}")
+    public ResponseEntity<?> deleteQuestion(@PathVariable Long id) {
+        questionRepository.deleteById(id);
+
         return ResponseEntity.noContent().build();
     }
 }
