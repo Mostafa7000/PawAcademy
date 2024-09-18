@@ -221,3 +221,54 @@ button a:hover {
 .question:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
+
+.side-nav {
+    text-align: center;
+    width: 100px;
+    background-color: #4CAF50;
+    padding: 20px;
+    color: white;
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+}
+
+.side-nav h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.side-nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.side-nav li {
+    margin-bottom: 20px;
+}
+
+.side-nav ul a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #1d9838;
+}
+
+.side-nav a:hover {
+    background-color: #388e3c;
+}
+
+.side-nav a img.home-icon {
+    width: 75px;  /* Adjust the size as needed */
+    display: block;
+    margin: 0 auto 20px auto;  /* Center the icon and add some space below */
+    padding-bottom: 30px;
+    padding-top: 30px;
+}
+
+.side-nav a img.home-icon:hover {
+    opacity: 0.8;  /* Slight hover effect */
+}

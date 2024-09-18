@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <main>
+    <nav th:replace="~{side-nav :: side-nav}"></nav>
+
     <div class="container" th:fragment="lessons-list">
         <h1>Unit Lessons</h1>
         <div class="nav-bar">

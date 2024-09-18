@@ -3,6 +3,8 @@
 <div th:replace="~{head :: head('Add Lesson')}"></div>
 <body>
 <main>
+    <nav th:replace="~{side-nav :: side-nav}"></nav>
+
     <div class="container">
         <h1>Create New Lesson</h1>
         <form action="#" th:action="@{/admin/lessons(unitId=${unitId})}" th:object="${lesson}" method="post">

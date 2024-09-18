@@ -4,6 +4,8 @@
 
 <body>
 <main>
+    <nav th:replace="~{side-nav :: side-nav}"></nav>
+
     <div class="container">
         <h1><span th:text="${unit.name}"/></h1>
         <div class="form-group">

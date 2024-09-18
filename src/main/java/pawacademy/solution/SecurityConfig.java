@@ -1,4 +1,4 @@
-package pawacademy.solution.user;
+package pawacademy.solution;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -47,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/**","/media/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**","/admin/**", "/admin/**","/css/**").permitAll()
+                .antMatchers("/auth/**","/media/**", "/swagger-ui/**", "/swagger-ui.html",
+                        "/v3/api-docs/**","/admin/**", "/admin/**","/css/**","/image/**","/js/**","/favicon.ico").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement()

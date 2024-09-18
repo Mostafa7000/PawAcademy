@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{head :: head(Units)}"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pets Academy</title>
+    <link rel="stylesheet/css" href="/static/css/styles.css">
+    <style>
+        /* Additional styles for the landing page layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .content {
+            margin-left: 270px;
+            padding: 40px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .content h1 {
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+
+        .landing-image {
+            max-width: 80%;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="~{side-nav :: side-nav}"></nav>
+
+<div class="container">
+    <div class="content">
+        <h1>Welcome to Pets Academy</h1>
+        <!-- Display the image here -->
+        <img class="landing-image" src="/image/paws.jpg" alt="Pets Academy Image">
+    </div>
+</div>
+</body>
+</html>

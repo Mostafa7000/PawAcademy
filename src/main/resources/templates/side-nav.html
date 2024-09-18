@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<nav class="side-nav" th:fragment="side-nav">
+    <a href="/admin" title="Go to main page">
+        <img src="/favicon.ico" alt="Home" class="home-icon">
+    </a>
+    <ul>
+        <li><strong>Content</strong></li>
+        <li><a href="/admin/units">Units</a></li>
+        <li><strong>Forum</strong></li>
+        <li><a href="/admin/posts">Posts</a></li>
+        <li><a href="#users">Users</a></li>
+    </ul>
+</nav>
+</body>
+</html>
