@@ -27,6 +27,7 @@ public class Lesson implements Cloneable {
     @NotBlank
     private String name;
     @NotBlank
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
     private String video;
 

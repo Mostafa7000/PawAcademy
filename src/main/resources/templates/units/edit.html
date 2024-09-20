@@ -25,13 +25,11 @@
                 <input type="text" id="description" th:field="*{description}" required/>
             </div>
             <div class="form-group">
-                <label for="exam">Exam:</label>
-                <input type="text" id="exam" th:field="*{exam}"/>
-            </div>
-            <div class="form-group">
                 <label for="image">Image:</label>
                 <input type="file" id="image" name="uploadedImage" accept="image/*"/>
             </div>
+            <button type="button" class="edit-button"><a th:href="@{/admin/units/{id}/exams/edit(id=${unit.id})}">Edit Exam</a></button>
+
             <div class="form-group">
                 <input type="submit" value="Save">
             </div>

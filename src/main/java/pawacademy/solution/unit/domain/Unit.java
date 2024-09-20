@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import pawacademy.services.UriService;
 import pawacademy.solution.lesson.domain.Lesson;
+import pawacademy.solution.question.domain.Question;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -25,16 +28,18 @@ public class Unit implements Cloneable {
     private String name;
     @NotBlank
     private String description;
-    private String exam;
     private String image;
     @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Lesson> lessons = new ArrayList<>();
 
-    @Override
-    public Unit clone() {
-        return new Unit(this.id, this.name, this.description, this.exam, this.image, lessons);
-    }
+    @OneToMany(mappedBy = "unit", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Question> examQuestions = new ArrayList<>();
+
+    @Transient
+    private List<Question> newExamQuestions = new ArrayList<>();
 
     public String getImage() {
         return UriService.getUri(image);

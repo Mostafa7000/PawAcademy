@@ -1,6 +1,7 @@
 package pawacademy.solution.user.application;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pawacademy.services.FileStorageService;
 import pawacademy.services.UriService;
+import pawacademy.solution.unit.application.dto.ExamTrialDto;
+import pawacademy.solution.unit.domain.ExamTrialRepository;
 import pawacademy.solution.user.application.authentication.CurrentUser;
 import pawacademy.solution.user.application.dto.AvatarDto;
 import pawacademy.solution.user.application.dto.PasswordResetDto;
@@ -18,6 +21,8 @@ import pawacademy.solution.user.domain.UserRepository;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/profile")
@@ -28,9 +33,20 @@ public class UserController {
     private FileStorageService fileStorageService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    ExamTrialRepository examTrialRepository;
 
     @GetMapping
     public ResponseEntity<?> profile(@CurrentUser User user) {
+        var trials = examTrialRepository.findExamTrialsByUserId(user.getId());
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        List<ExamTrialDto> examTrialDtos = new ArrayList<>();
+        for (var trial : trials) {
+            examTrialDtos.add(mapper.map(trial, ExamTrialDto.class));
+        }
+        user.setExamTrials(examTrialDtos);
+
         return ResponseEntity.ok(user);
     }
 

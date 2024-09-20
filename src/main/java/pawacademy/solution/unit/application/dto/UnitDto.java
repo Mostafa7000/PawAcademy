@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pawacademy.solution.question.application.dto.QuestionDto;
 
+import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -15,7 +17,7 @@ public class UnitDto{
     private String name;
     private String description;
     private String image;
-    private String exam;
+    private List<QuestionDto> examQuestions;
     private int completedLessons;
     private int totalLessons;
 

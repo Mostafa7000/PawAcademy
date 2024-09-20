@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<div th:replace="~{head :: head('Edit Lesson')}"></div>
+<div th:replace="~{head :: head('Edit Exam')}"></div>
 <body>
 <main>
     <nav th:replace="~{side-nav :: side-nav}"></nav>
@@ -8,43 +8,28 @@
     <div class="container">
         <button type="button" class="return-btn">
             <i class="fa-solid fa-arrow-left"></i>
-            <a th:href="@{/admin/units/edit/{id}(id=${unitId})}">Return To Unit</a>
+            <a th:href="@{/admin/units/edit/{id}(id=${unit.id})}">Return To Unit</a>
         </button>
-        <h1><span th:text="${lesson.name}"></span></h1>
-
-        <!-- Form to Edit Lesson -->
-        <form action="#" th:action="@{/admin/lessons/update/{id}(id=${lesson.id}, unitId=${unitId})}"
-              th:object="${lesson}" method="post">
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" th:field="*{name}" required/>
-            </div>
-            <div class="form-group">
-                <label for="description">Content:</label>
-                <textarea id="description" th:field="*{content}" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="exam">Video Link:</label>
-                <input type="text" id="exam" th:field="*{video}"/>
-            </div>
-
+        <h1><span th:text="${unit.name}"></span></h1>
+        <form action="#" th:action="@{/admin/units/{id}/exam(id=${unit.id})}" th:object="${unit}" method="post">
             <!-- Questions Section -->
-            <h2>Questions</h2>
+            <h2>Exam</h2>
             <div id="questions-container">
-                <div th:each="question, questionStat : ${lesson.questions}" th:id="'question-' + __${question.id}__"
+                <div th:each="question, questionStat : ${unit.examQuestions}" th:id="'question-' + __${question.id}__"
                      class="question">
-                    <input type="text" th:field="*{questions[__${questionStat.index}__].id}" hidden/>
+                    <input type="text" th:field="*{examQuestions[__${questionStat.index}__].id}" hidden/>
 
                     <div class="form-group">
                         <button type="button" class="remove-button" onclick="removeQuestion(this)">&#10006;</button>
                         <label for="questionText"><strong>Question:</strong></label>
-                        <input id="questionText" type="text" th:field="*{questions[__${questionStat.index}__].text}"
+                        <input id="questionText" type="text"
+                               th:field="*{examQuestions[__${questionStat.index}__].text}"
                                required/>
                     </div>
 
                     <div class="form-group">
                         <label for="questionType">Type:</label>
-                        <select id="questionType" th:field="*{questions[__${questionStat.index}__].type}"
+                        <select id="questionType" th:field="*{examQuestions[__${questionStat.index}__].type}"
                                 th:disabled="${question.id != null}">
                             <option value="MULTIPLE_CHOICE">Multiple Choice</option>
                             <option value="TRUE_FALSE">True/False</option>
@@ -57,20 +42,21 @@
                         <div th:each="option, optionStat : ${question.options}" class="input-container">
                             <div class="option-group" th:id="'option-' + __${option.id}__">
                                 <input type="text"
-                                       th:field="*{questions[__${questionStat.index}__].options[__${optionStat.index}__].id}"
+                                       th:field="*{examQuestions[__${questionStat.index}__].options[__${optionStat.index}__].id}"
                                        hidden/>
 
                                 <!-- Option input field with remove button inside -->
                                 <div class="input-wrapper">
                                     <input type="text"
-                                           th:field="*{questions[__${questionStat.index}__].options[__${optionStat.index}__].text}"
+                                           th:field="*{examQuestions[__${questionStat.index}__].options[__${optionStat.index}__].text}"
                                            required/>
                                     <button type="button" class="remove-option-button" onclick="removeOption(this)">
                                         &#10006;
                                     </button>
                                 </div>
                                 <!-- Radio button to select the correct answer -->
-                                <input type="radio" th:field="*{questions[__${questionStat.index}__].correctAnswerId}"
+                                <input type="radio"
+                                       th:field="*{examQuestions[__${questionStat.index}__].correctAnswerId}"
                                        th:value="${option.id}"/>
                             </div>
                         </div>
@@ -82,18 +68,20 @@
                     <!-- For True/False Questions -->
                     <div th:if="${question.type.name() == 'TRUE_FALSE'}">
                         <span>Options:</span>
-                        <label><input type="radio" th:field="*{questions[__${questionStat.index}__].correctAnswerId}"
+                        <label><input type="radio"
+                                      th:field="*{examQuestions[__${questionStat.index}__].correctAnswerId}"
                                       th:value="1"/>True</label>
-                        <label><input type="radio" th:field="*{questions[__${questionStat.index}__].correctAnswerId}"
+                        <label><input type="radio"
+                                      th:field="*{examQuestions[__${questionStat.index}__].correctAnswerId}"
                                       th:value="2"/>False</label>
                     </div>
                 </div>
             </div>
             <br>
-            <button type="button" th:onclick="'addQuestion('+${lesson.questions.size()} + ')'">Add Question</button>
+            <button type="button" onclick="addQuestion()">Add Question</button>
             <hr>
             <br>
-            <button type="submit">Save Lesson</button>
+            <button type="submit">Save Exam</button>
         </form>
     </div>
 </main>
@@ -102,9 +90,9 @@
 <script src="/js/services.js"></script>
 <script>
 
-    let newQuestionIndex = 0;
+    let newQuestionIndex = -1;
 
-    function addQuestion(currentQuestionsCount) {
+    function addQuestion() {
         newQuestionIndex++;
 
         const container = document.getElementById('questions-container');
@@ -114,12 +102,12 @@
         <div class="form-group">
             <button type="button" class="remove-button" onclick="removeQuestion(this)">&#10006;</button>
             <label for="questionText">Question:</label>
-            <input id="questionText" type="text" name="newQuestions[${newQuestionIndex}].text" required/>
+            <input id="questionText" type="text" name="newExamQuestions[${newQuestionIndex}].text" required/>
         </div>
 
         <div class="form-group">
             <label for="questionType">Type:</label>
-            <select id="questionType" name="newQuestions[${newQuestionIndex}].type" onchange="showOptions(this, ${newQuestionIndex})">
+            <select id="questionType" name="newExamQuestions[${newQuestionIndex}].type" onchange="showOptions(this, ${newQuestionIndex})">
                 <option value="" selected disabled hidden>Choose type..</option>
                 <option value="MULTIPLE_CHOICE">Multiple Choice</option>
                 <option value="TRUE_FALSE">True/False</option>
@@ -130,7 +118,6 @@
         <div id="options-${newQuestionIndex}">
         </div>
         `;
-
         container.appendChild(newQuestion);
     }
 
@@ -141,17 +128,17 @@
             optionsContainer.innerHTML = `
             <div class="input-container">
             </div>
-            <button type="button" onclick="addOption(this, ${questionIndex}, 'newQuestions')">Add Option</button>
+            <button type="button" onclick="addOption(this, ${questionIndex}, 'newExamQuestions')">Add Option</button>
             `
         } else {
             optionsContainer.innerHTML = `
-            <label><input type="radio" name="newQuestions[${questionIndex}].correctAnswerId" value="1" checked/>True</label>
-            <label><input type="radio" name="newQuestions[${questionIndex}].correctAnswerId" value="2"/>False</label>
+            <label><input type="radio" name="newExamQuestions[${questionIndex}].correctAnswerId" value="1" checked/>True</label>
+            <label><input type="radio" name="newExamQuestions[${questionIndex}].correctAnswerId" value="2"/>False</label>
             `
         }
     }
 
-    let newOptionId = -1;
+    let newOptionId = 1;
 
     function addOption(button, questionIndex, questionType = 'questions') {
         const container = button.parentElement.querySelector('.input-container');

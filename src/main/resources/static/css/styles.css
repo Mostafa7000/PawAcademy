@@ -144,6 +144,10 @@ table .icon {
     max-width: 10rem;
 }
 
+table img.user {
+    max-width: 30%;
+}
+
 .delete-btn {
     color: #dc3545;
 }
@@ -209,6 +213,18 @@ button a:hover {
     background-color: #b6000b;
 }
 
+.edit-button {
+    background-color: #3a84d0;
+    color: white;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+}
+
+.edit-button:hover {
+    background-color: #006adc;
+
+}
+
 .question {
     margin: 50px 10px;
     border: none;
@@ -271,4 +287,61 @@ button a:hover {
 
 .side-nav a img.home-icon:hover {
     opacity: 0.8;  /* Slight hover effect */
+}
+
+/* Style the container for the search results */
+/* Style the container for the search results */
+#searchResults {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    max-height: 200px; /* Limiting height for scrollable view */
+    overflow-y: auto;  /* Allow vertical scrolling */
+    overflow-x: hidden; /* Disable horizontal scrolling */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Style individual list items */
+#searchResults li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Remove border from the last list item */
+#searchResults li:last-child {
+    border-bottom: none;
+}
+
+/* Hover effect for list items */
+#searchResults li:hover {
+    background-color: #f0f0f0;
+    transform: translateX(5px);  /* Smooth right movement on hover */
+}
+
+/* Style the clickable links within list items */
+#searchResults li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    display: block;  /* Make the link take up the entire list item */
+}
+
+/* Change link color on hover */
+#searchResults li a:hover {
+    color: #007bff;  /* Change link color to a blue shade */
+}
+
+/* Style for an empty search result */
+#searchResults.empty::before {
+    content: "No users found";
+    display: block;
+    color: #999;
+    text-align: center;
+    padding: 10px;
 }

@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface UnitRepository extends JpaRepository<Unit, Long> {
-    @Query(value = "SELECT u.id, u.name, u.description, u.image, u.exam," +
+    @Query(value = "SELECT u.id, u.name, u.description, u.image," +
             "COUNT(DISTINCT c.id) AS completed_lessons, " +
             "COUNT(DISTINCT l.id) AS total_lessons " +
             "FROM units u " +

@@ -1,6 +1,5 @@
 package pawacademy.solution.lesson.application;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,7 +27,6 @@ public class LessonAdminController {
     private OptionRepository optionRepository;
     @Autowired
     private QuestionRepository questionRepository;
-    private ModelMapper mapper = new ModelMapper();
 
     @GetMapping
     public String listLessons(Model model) {

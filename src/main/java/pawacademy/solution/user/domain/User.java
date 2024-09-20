@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pawacademy.services.UriService;
+import pawacademy.solution.unit.application.dto.ExamTrialDto;
 import pawacademy.solution.user.application.validation.PasswordComplexity;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -50,6 +52,9 @@ public class User {
     private String verificationToken;
     private boolean isVerified = false;
     private String rpToken;
+
+    @Transient
+    private List<ExamTrialDto> examTrials;
 
     public String getAvatar() {
         return UriService.getUri(avatar);

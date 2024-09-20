@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 import pawacademy.solution.lesson.domain.Lesson;
+import pawacademy.solution.unit.domain.Unit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -31,6 +32,11 @@ public class Question {
     @JoinColumn(name = "lesson_id")
     @ToString.Exclude
     private Lesson lesson;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id")
+    @ToString.Exclude
+    private Unit unit;
 
     @Enumerated(EnumType.STRING)
     private QuestionType type;

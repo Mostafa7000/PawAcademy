@@ -26,21 +26,21 @@ public class ResponseExceptionHandler {
                 .body(body);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleException(Exception e) {
-        System.out.println(e.getMessage());
-
-        var body = Response.builder()
-                .timestamp(LocalDateTime.now())
-                .statusCode(HttpStatus.FORBIDDEN.value())
-                .message(e.getMessage())
-                .data(null)
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(body);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<?> handleException(Exception e) {
+//        System.out.println(e.getMessage());
+//
+//        var body = Response.builder()
+//                .timestamp(LocalDateTime.now())
+//                .statusCode(HttpStatus.FORBIDDEN.value())
+//                .message(e.getMessage())
+//                .data(null)
+//                .build();
+//
+//        return ResponseEntity
+//                .status(HttpStatus.FORBIDDEN)
+//                .body(body);
+//    }
 
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<?> handleException(AuthorizationException e) {
