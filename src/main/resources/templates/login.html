@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{head :: head(Login)}"></head>
+
+<body>
+
+<div class="container">
+    <h1>Login</h1>
+
+    <form class="form-group" th:action="@{/admin/login}" method="post">
+        <!-- Error message display -->
+        <p th:if="${loginError}" class="error" style="color: red;">Wrong user or password</p>
+
+        <!-- Username field -->
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" autofocus="autofocus" />
+
+        <!-- Password field -->
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" />
+
+        <!-- Submit button -->
+        <div style="text-align: center; margin-top: 20px;">
+            <input type="submit" value="Log in" class="submit-btn" />
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

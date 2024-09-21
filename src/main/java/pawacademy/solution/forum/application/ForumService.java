@@ -1,9 +1,9 @@
 package pawacademy.solution.forum.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pawacademy.AuthorizationException;
 import pawacademy.ResponseException;
 import pawacademy.services.FileStorageService;
 import pawacademy.solution.forum.domain.*;
@@ -158,9 +158,9 @@ public class ForumService {
         return postRepository.save(post);
     }
 
-    protected void validateAuthorization(Content content, User user) {
+    protected void validateAuthorization(Content content, User user) throws AuthorizationException {
         if (!Objects.equals(user.getId(), content.getAuthor().getId())) {
-            throw new AuthenticationCredentialsNotFoundException("Current user can't operate on this content");
+            throw new AuthorizationException("Current user can't operate on this content");
         }
     }
 }

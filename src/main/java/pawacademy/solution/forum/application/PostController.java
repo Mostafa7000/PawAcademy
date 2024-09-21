@@ -31,8 +31,11 @@ public class PostController {
             @CurrentUser User user,
             @RequestPart("post") String post,
             @RequestPart("title") String title,
-            @RequestPart("images") MultipartFile[] attachments
+            @RequestPart(value = "images", required = false) MultipartFile[] attachments
     ) {
+        if (Objects.isNull(attachments)) {
+            attachments = new MultipartFile[0];
+        }
         var publishedPost = forumService.publish(user, post, title, attachments);
 
         return ResponseEntity.created(getRelocationUri("posts/" + publishedPost.getId())).build();
