@@ -83,7 +83,7 @@ button:hover, input[type="submit"]:hover {
     background-color: #45a049;
 }
 
-input[type="text"], textarea, input[type="password"]  {
+input[type="text"], textarea, input[type="password"] {
     width: 100%;
     padding: 10px;
     margin: 8px 0;
@@ -170,7 +170,7 @@ button a:hover {
 }
 
 .return-btn:hover {
-    !important;
+!important;
     background-color: #a0a0a0;
 }
 
@@ -230,15 +230,17 @@ button a:hover {
     border: none;
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
 }
 
 .question:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .side-nav {
+    display: flex;
+    flex-direction: column;
     text-align: center;
     width: 100px;
     background-color: #4CAF50;
@@ -249,12 +251,17 @@ button a:hover {
     position: fixed;
 }
 
+.side-nav a {
+    display: block;
+}
+
 .side-nav h2 {
     text-align: center;
     margin-bottom: 30px;
 }
 
 .side-nav ul {
+    display: block;
     list-style-type: none;
     padding: 0;
 }
@@ -273,20 +280,34 @@ button a:hover {
     background-color: #1d9838;
 }
 
-.side-nav a:hover {
+.side-nav ul a:hover {
     background-color: #388e3c;
 }
 
-.side-nav a img.home-icon {
-    width: 75px;  /* Adjust the size as needed */
+.side-nav a.logout {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
     display: block;
-    margin: 0 auto 20px auto;  /* Center the icon and add some space below */
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #b44c53;
+}
+
+.side-nav a.logout:hover {
+    background-color: #b6000b;
+}
+
+.side-nav a img.home-icon {
+    width: 75px; /* Adjust the size as needed */
+    display: block;
+    margin: 0 auto 20px auto; /* Center the icon and add some space below */
     padding-bottom: 30px;
     padding-top: 30px;
 }
 
 .side-nav a img.home-icon:hover {
-    opacity: 0.8;  /* Slight hover effect */
+    opacity: 0.8; /* Slight hover effect */
 }
 
 /* Style the container for the search results */
@@ -298,7 +319,7 @@ button a:hover {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     max-height: 200px; /* Limiting height for scrollable view */
-    overflow-y: auto;  /* Allow vertical scrolling */
+    overflow-y: auto; /* Allow vertical scrolling */
     overflow-x: hidden; /* Disable horizontal scrolling */
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -321,7 +342,7 @@ button a:hover {
 /* Hover effect for list items */
 #searchResults li:hover {
     background-color: #f0f0f0;
-    transform: translateX(5px);  /* Smooth right movement on hover */
+    transform: translateX(5px); /* Smooth right movement on hover */
 }
 
 /* Style the clickable links within list items */
@@ -329,12 +350,12 @@ button a:hover {
     text-decoration: none;
     color: #333;
     font-weight: 500;
-    display: block;  /* Make the link take up the entire list item */
+    display: block; /* Make the link take up the entire list item */
 }
 
 /* Change link color on hover */
 #searchResults li a:hover {
-    color: #007bff;  /* Change link color to a blue shade */
+    color: #007bff; /* Change link color to a blue shade */
 }
 
 /* Style for an empty search result */
