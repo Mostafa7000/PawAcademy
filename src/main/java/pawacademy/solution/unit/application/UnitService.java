@@ -112,8 +112,8 @@ public class UnitService {
         unitDto.setName((String) result[1]);
         unitDto.setDescription((String) result[2]);
         unitDto.setImage((String) result[3]);
-        unitDto.setCompletedLessons(((Number) result[5]).intValue());
-        unitDto.setTotalLessons(((Number) result[6]).intValue());
+        unitDto.setCompletedLessons(((Number) result[4]).intValue());
+        unitDto.setTotalLessons(((Number) result[5]).intValue());
         return unitDto;
     }
 

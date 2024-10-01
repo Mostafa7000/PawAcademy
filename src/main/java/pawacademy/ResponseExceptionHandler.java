@@ -45,9 +45,30 @@ public class ResponseExceptionHandler {
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<?> handleException(AuthorizationException e) {
         System.out.println(e.getMessage());
+        var body = Response.builder()
+                .timestamp(LocalDateTime.now())
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .message(e.getMessage())
+                .data(null)
+                .build();
 
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(e.getMessage());
+                .body(body);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        System.out.println(e.getMessage());
+        var body = Response.builder()
+                .timestamp(LocalDateTime.now())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .data(null)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(body);
     }
 }
