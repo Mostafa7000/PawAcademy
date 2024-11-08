@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -26,29 +27,12 @@ public class ResponseExceptionHandler {
                 .body(body);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<?> handleException(Exception e) {
-//        System.out.println(e.getMessage());
-//
-//        var body = Response.builder()
-//                .timestamp(LocalDateTime.now())
-//                .statusCode(HttpStatus.FORBIDDEN.value())
-//                .message(e.getMessage())
-//                .data(null)
-//                .build();
-//
-//        return ResponseEntity
-//                .status(HttpStatus.FORBIDDEN)
-//                .body(body);
-//    }
-
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<?> handleException(AuthorizationException e) {
-        System.out.println(e.getMessage());
         var body = Response.builder()
                 .timestamp(LocalDateTime.now())
                 .statusCode(HttpStatus.FORBIDDEN.value())
-                .message(e.getMessage())
+                .message("You are blocked. Contact The Admin")
                 .data(null)
                 .build();
 
@@ -59,7 +43,19 @@ public class ResponseExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
-        System.out.println(e.getMessage());
+        var cause = e.getCause();
+        if (cause instanceof AuthorizationException) {
+            var body = Response.builder()
+                    .timestamp(LocalDateTime.now())
+                    .statusCode(HttpStatus.FORBIDDEN.value())
+                    .message("You are blocked. Contact The Admin")
+                    .data(null)
+                    .build();
+
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(body);
+        }
         var body = Response.builder()
                 .timestamp(LocalDateTime.now())
                 .statusCode(HttpStatus.BAD_REQUEST.value())
