@@ -142,6 +142,7 @@ public class ForumService {
 
     public Post editPostReply(Long postId, Long replyId, String newText, @CurrentUser User user) throws ResponseException, IOException {
         var post = getPost(postId);
+        validateAuthorization(post, user);
 
         Iterator<Reply> it = post.getReplies().iterator();
         while (it.hasNext()) {
